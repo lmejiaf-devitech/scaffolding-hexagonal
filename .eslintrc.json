@@ -1,0 +1,163 @@
+{
+  "env": {
+    "browser": true,
+    "es2021": true,
+    "node": true
+  },
+  "extends": [
+    "airbnb-base",
+    "plugin:@typescript-eslint/recommended"
+  ],
+  "parserOptions": {
+    "ecmaVersion": "latest",
+    "sourceType": "module",
+    "project": "./tsconfig.json"
+  },
+  "overrides": [
+    {
+      "files": [
+        "*.test.ts",
+        "*.spec.ts",
+        "test/*/*.ts"
+      ],
+      "rules": {
+        "no-undef": "off",
+        "no-unused-expressions": "off",
+        "prefer-arrow-callback": "off",
+        "func-names": "off",
+        "import/no-extraneous-dependencies": "off"
+      }
+    }
+  ],
+  "parser": "@typescript-eslint/parser",
+  "plugins": [
+    "@typescript-eslint"
+  ],
+  "rules": {
+    "max-len": [
+      "error",
+      {
+        "code": 150,
+        "ignoreStrings": true,
+        "ignoreComments": true,
+        "ignoreUrls": true,
+        "ignoreTemplateLiterals": true,
+        "ignoreRegExpLiterals": true
+      }
+    ],
+    "no-continue": "off",
+    "no-restricted-globals": "off",
+    "indent": [
+      "error",
+      2,
+      {
+        "SwitchCase": 1,
+        "VariableDeclarator": 2,
+        "outerIIFEBody": 1,
+        "MemberExpression": 2,
+        "FunctionExpression": {
+          "parameters": 2,
+          "body": 1
+        },
+        "ArrayExpression": 1,
+        "ObjectExpression": 1,
+        "ImportDeclaration": 1,
+        "flatTernaryExpressions": false,
+        "ignoreComments": false
+      }
+    ],
+    "radix": "off",
+    "linebreak-style": "off",
+    "space-before-function-paren": "off",
+    "no-await-in-loop": "off",
+    "no-restricted-syntax": "off",
+    "no-throw-literal": "off",
+    "no-param-reassign": "off",
+    "arrow-body-style": "off",
+    "import/prefer-default-export": "off",
+    "array-bracket-spacing": [
+      2,
+      "always"
+    ],
+    "import/no-unresolved": "off",
+    "no-unused-vars": "off",
+    "@typescript-eslint/no-unused-vars": [
+      "error",
+      {
+        "args": "none"
+      }
+    ],
+    "import/no-extraneous-dependencies": "off",
+    "@typescript-eslint/no-useless-constructor": "off",
+    "key-spacing": [
+      "error",
+      {
+        "align": {
+          "beforeColon": true,
+          "afterColon": true,
+          "on": "colon"
+        }
+      }
+    ],
+    "camelcase": "off",
+    "@typescript-eslint/naming-convention": [
+      "error",
+      {
+        "selector": "default",
+        "format": [
+          "camelCase",
+          "PascalCase"
+        ]
+      },
+      {
+        "selector": "property",
+        "format": [
+          "camelCase",
+          "UPPER_CASE"
+        ]
+      },
+      {
+        "selector": "enumMember",
+        "format": [
+          "UPPER_CASE"
+        ]
+      },
+      {
+        "selector": "class",
+        "format": [
+          "PascalCase"
+        ]
+      },
+      {
+        "selector": "interface",
+        "format": [
+          "PascalCase"
+        ]
+      },
+      {
+        "selector": "enum",
+        "format": [
+          "PascalCase"
+        ]
+      },
+      {
+        "selector": "variable",
+        "format": [
+          "camelCase"
+        ]
+      },
+      {
+        "selector": "parameterProperty",
+        "format": [
+          "camelCase"
+        ]
+      },
+      {
+        "selector": "parameter",
+        "format": [
+          "camelCase"
+        ]
+      }
+    ]
+  }
+}
