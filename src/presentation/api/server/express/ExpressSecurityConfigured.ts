@@ -10,7 +10,7 @@ import compression from 'compression';
 
 
 import { inject, injectable } from "inversify";
-import { ILogger } from "@infrastructure/logger/commons/ILogger";
+import { ILogger } from "@commons/infrastructure/ILogger";
 import log4js from "log4js";
 
 @injectable()

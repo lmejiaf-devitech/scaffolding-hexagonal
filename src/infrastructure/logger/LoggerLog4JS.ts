@@ -1,5 +1,5 @@
 import log4js, { LoggingEvent } from 'log4js';
-import { ILogger } from './commons/ILogger';
+import { ILogger } from '../../commons/infrastructure/ILogger';
 import { injectable } from 'inversify';
 
 @injectable()

@@ -1,32 +1,15 @@
-export class CreateNewsDto {
-    private title: string;
-    private description: string;
-    private creationDate: Date;
+import { GeneralApiResponse, GeneralApiResponseError } from "@commons/presentation/GeneralApiResponse";
 
-    constructor() { }
-    
-    public getTitle(): string {
-        return this.title;
-    }
-
-    public setTitle(title: string): void {
-        this.title = title;
-    }
-
-    public getDescription(): string {
-        return this.description;
-    }
-
-    public setDescription(description: string): void {
-        this.description = description;
-    }
-
-    public getCreationDate(): Date {
-        return this.creationDate;
-    }
-
-    public setCreationDate(creationDate: Date): void {
-        this.creationDate = creationDate;
-    }
-
+export type CreateNewsRequestDto = {
+    title: string;
+    description: string;
 }
+export type CreateNewsSuccessDto = GeneralApiResponse & {
+    id: string;
+    title: string;
+    description: string;
+    creationDate: Date;
+}
+export type CreateNewsFailedDto = GeneralApiResponse & GeneralApiResponseError;
+
+export type CreatedNewsResponseDto = CreateNewsSuccessDto | CreateNewsFailedDto;

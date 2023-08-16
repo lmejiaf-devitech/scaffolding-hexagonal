@@ -1,22 +1,22 @@
 import { inject, injectable } from "inversify";
-import { CreateNewsDto } from "../dtos/CreateNewsDto";
-import { IMapper } from "@commons/IMapper";
-import { News } from "@domain/entities/News";
+import { CreateNewsRequestDto, CreatedNewsResponseDto } from "../dtos/CreateNewsDto";
 
 @injectable()
 export class CreateNewsController {
 
-    private iMapperCreateNewsDtoToNewsDomain: IMapper<CreateNewsDto, News>;
-    
-    constructor(
-        @inject("MapCreateNewsDtoToNewsDomain") iMapperCreateNewsDtoToNewsDomain: IMapper<CreateNewsDto, News>
-    ) {
-        this.iMapperCreateNewsDtoToNewsDomain = iMapperCreateNewsDtoToNewsDomain;
+    public execute(createNewDto: CreateNewsRequestDto): CreatedNewsResponseDto {
+
+
+
+        return {
+            id: '203050',
+            title: createNewDto.title,
+            description: createNewDto.description,
+            technicalCode: 201,
+            technicalMessage: 'Se ha creado correctamente la noticia',
+            responseDate: new Date(),
+            creationDate: new Date(),
+        } as CreatedNewsResponseDto;
     }
 
-    public execute(createNewDto: CreateNewsDto) {
-        const news: News = this.iMapperCreateNewsDtoToNewsDomain.mapTo(createNewDto);
-
-        //ejecutar casos de uso y reglas de validación
-    }
 }
