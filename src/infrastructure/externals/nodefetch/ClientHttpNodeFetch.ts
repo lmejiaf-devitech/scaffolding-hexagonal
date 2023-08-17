@@ -54,6 +54,16 @@ export class ClientHttpNodeFetch implements IClientHttp {
     });
     return this.handleResponse<T>(response);
   };
+  
+  post = async<T>(url: string, body: unknown, options?: RequestInit): Promise<T> => {
+    const response = await fetch(url, {
+      method  : 'post',
+      body    : JSON.stringify(body),
+      headers : { 'Content-Type': 'application/json' },
+      ...options,
+    });
+    return this.handleResponse<T>(response);
+  };
 
   remove = async <T>(url: string, headers?: Record<string, string>): Promise<T> => {
     const response = await fetch(url, {
