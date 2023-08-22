@@ -7,20 +7,15 @@ import fetch, { RequestInit, Response } from 'node-fetch';
 
 @injectable()
 export class ClientHttpNodeFetch implements IClientHttp {
-
   private iLogger: ILogger<Logger>;
 
-
   constructor(
-    @inject("LoggerLog4JS") iLogger: ILogger<Logger>
+    @inject('LoggerLog4JS') iLogger: ILogger<Logger>,
   ) {
     this.iLogger = iLogger;
   }
-  handle<T>(): Promise<T> {
-    throw new Error('Method not implemented.');
-  }
 
-  handleResponse = async <T>(response: Response): Promise<T> => {
+  handleResponse = async<T>(response: Response): Promise<T> => {
     if (!response.ok) {
       const errorBody = await response.text();
       throw new Error(`[ :: HTTP Error :: ] ${response.status}:> ${errorBody}`);
@@ -33,9 +28,9 @@ export class ClientHttpNodeFetch implements IClientHttp {
       jsonResponse = null;
     }
     const res = jsonResponse || {
-      url: response.url,
-      status: response.status,
-      statusText: response.statusText,
+      url        : response.url,
+      status     : response.status,
+      statusText : response.statusText,
     };
     this.iLogger.getConfiguredLogger().info(`[ :: HTTP Response :: ] -> ${JSON.stringify(res)}`);
     return res as T;
@@ -48,13 +43,13 @@ export class ClientHttpNodeFetch implements IClientHttp {
 
   put = async <T>(url: string, data: Record<string, unknown>, headers?: Record<string, string>): Promise<T> => {
     const response = await fetch(url, {
-      method: 'put',
+      method : 'put',
       headers,
-      body: JSON.stringify(data),
+      body   : JSON.stringify(data),
     });
     return this.handleResponse<T>(response);
   };
-  
+
   post = async<T>(url: string, body: unknown, options?: RequestInit): Promise<T> => {
     const response = await fetch(url, {
       method  : 'post',

@@ -1,41 +1,43 @@
 export class News {
-    private id: string;
-    private title: string;
-    private description: string;
-    private creationDate: Date;
+  private id: string;
 
-    constructor() { }
+  private title: string;
 
-    public getId(): string {
-        return this.id;
-    }
+  private description: string;
 
-    public setId(id: string): void {
-        this.id = id;
-    }
+  private creationDate: Date;
 
-    public getTitle(): string {
-        return this.title;
-    }
+  constructor() { }
 
-    public setTitle(title: string): void {
-        this.title = title;
-    }
+  public getId(): string {
+    return this.id;
+  }
 
-    public getDescription(): string {
-        return this.description;
-    }
+  public setId(id: string): void {
+    this.id = id;
+  }
 
-    public setDescription(description: string): void {
-        this.description = description;
-    }
+  public getTitle(): string {
+    return this.title;
+  }
 
-    public getCreationDate(): Date {
-        return this.creationDate;
-    }
+  public setTitle(title: string): void {
+    this.title = title;
+  }
 
-    public setCreationDate(creationDate: Date): void {
-        this.creationDate = creationDate;
-    }
+  public getDescription(): string {
+    return this.description;
+  }
 
+  public setDescription(description: string): void {
+    this.description = description;
+  }
+
+  public getCreationDate(): Date {
+    return this.creationDate;
+  }
+
+  public setCreationDate(creationDate: Date): void {
+    this.creationDate = creationDate;
+  }
 }

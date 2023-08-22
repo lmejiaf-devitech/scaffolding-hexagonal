@@ -1,5 +1,5 @@
 {
-  "name": "terpel_pos_scaffolding_hexagonal",
+  "name": "terpel_pos_app_terpel",
   "version": "1.0.0",
   "description": "Scaffolding hexagonal base",
   "main": "dist/presentation/index.js",
@@ -11,8 +11,8 @@
     "clean:build": "rimraf build",
     "clean:dist": "rimraf dist",
     "clean:all": "npm-run-all clean:pkg clean:build clean:dist",
-    "build:pkg-linux": "pkg package.json --compress GZip --targets node18-linux-x64 --output ./pkg/terpel_pos_scaffolding_hexagonal",
-    "build:pkg-win": "pkg package.json --compress GZip --targets node18-win-x64 --output ./pkg/terpel_pos_scaffolding_hexagonal.exe",
+    "build:pkg-linux": "pkg package.json --compress GZip --targets node18-linux-x64 --output ./pkg/terpel_pos_app_terpel",
+    "build:pkg-win": "pkg package.json --compress GZip --targets node18-win-x64 --output ./pkg/terpel_pos_app_terpel.exe",
     "compile:linux": "npm-run-all ts-compile build:pkg-linux",
     "compile:win": "npm-run-all ts-compile build:pkg-win",
     "compile:linux-web": "npm-run-all clean:all compile:linux",
@@ -20,13 +20,13 @@
   },
   "keywords": [],
   "author": "Devitech",
-  "bin": "./build/terpel_pos_scaffolding_hexagonal.js",
+  "bin": "./build/terpel_pos_app_terpel.js",
   "pkg": {
     "targets": [
       "node18-linux-x64",
       "node18-win-x64"
     ],
-    "scripts": "terpel_pos_scaffolding_hexagonal.js"
+    "scripts": "terpel_pos_app_terpel.js"
   },
   "license": "ISC",
   "devDependencies": {

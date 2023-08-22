@@ -13,7 +13,7 @@ const config: Configuration = {
   entry  : path.join(__dirname, 'src/presentation/index.ts'),
   output : {
     path     : path.join(__dirname, 'build'),
-    filename : 'terpel_pos_scaffolding_hexagonal.js',
+    filename : 'terpel_pos_app_terpel.js',
   },
   mode      : 'production',
   target    : 'node',
