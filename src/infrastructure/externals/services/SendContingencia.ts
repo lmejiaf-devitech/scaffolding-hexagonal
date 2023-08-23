@@ -26,7 +26,8 @@ export class SendContingencia {
       });
       console.log('🚀 ~ file: SendNotification.ts:21 ~ SendNotification ~ send= ~ response:', response);
       return response;
-    } catch (error) {
+    } catch (error: Error | any) {
+      console.log(error.includes('422'));
       console.log('🚀 ~ file: SendNotification.ts:23 ~ SendNotification ~ send= ~ error', error);
     }
   };

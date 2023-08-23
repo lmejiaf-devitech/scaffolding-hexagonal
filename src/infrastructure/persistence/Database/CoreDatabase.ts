@@ -26,9 +26,9 @@ export class CoreDatabase {
     });
   }
 
-  public async query(query: string, params: any): Promise<QueryResult> {
+  public async query(query: string, params?: any): Promise<QueryResult> {
     try {
-      const result = await this.pool.query(query, params);
+      const result = await this.pool.query(query, params || []);
       return result;
     } catch (error) {
       const errorMessage = '*****************************\n'

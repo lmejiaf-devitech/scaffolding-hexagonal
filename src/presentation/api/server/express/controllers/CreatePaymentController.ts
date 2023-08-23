@@ -9,7 +9,9 @@ import { IUseCase } from '@commons/application/IUseCase';
 import { GeneralApiResponse } from '@commons/presentation/GeneralApiResponse';
 import { PaymentDataNotFound } from '@domain/domain-exceptions/PaymentDataNotFound';
 import { ExceededPaymentRetries } from '@domain/domain-exceptions/ExceededPaymentRetries';
+import { BussinessInternalError } from '@domain/domain-exceptions/BussinessInternalError';
 import { CreatePaymentRequestDto, CreatePaymentSuccessDto } from '../dtos/PaymentNewsDto';
+import { Retries } from '@domain/entities/Retries';
 
 @injectable()
 export class CreatePaymentController {
@@ -17,16 +19,20 @@ export class CreatePaymentController {
 
   iManagePayment: IServices<Payment, Promise<ITransaccion>>;
 
-  iSendContingenciaUseCase: IUseCase<Payment, Promise<any>>;
+  iSendContingenciaUseCase: IUseCase<Retries, Promise<any>>;
+
+  iGetRetrieRequest: IUseCase<ITransaccion, Retries>;
 
   constructor(
     @inject('GetPaymentDataByIdUseCase') private getPaymentData: IUseCase<CreatePaymentRequestDto, Promise<Payment>>,
     @inject('ManagePaymentService') private managePayment: IServices<Payment, Promise<ITransaccion>>,
-    @inject('SendContingenciaUseCase') private sendContingencia: IUseCase<Payment, Promise<any>>,
+    @inject('SendContingenciaUseCase') private sendContingencia: IUseCase<Retries, Promise<any>>,
+    @inject('ValidateRetrieRequest') private validateRetrieRequest: IUseCase<ITransaccion, Retries>,
   ) {
     this.iGetPaymentDataByIdUseCase = getPaymentData;
     this.iManagePayment = managePayment;
     this.iSendContingenciaUseCase = sendContingencia;
+    this.iGetRetrieRequest = validateRetrieRequest;
   }
 
   execute = async(createPaymentDto: CreatePaymentRequestDto): Promise<CreatePaymentSuccessDto | GeneralApiResponse> => {
@@ -36,10 +42,11 @@ export class CreatePaymentController {
       const data = await this.iGetPaymentDataByIdUseCase.execute(createPaymentDto);
       const result = await this.iManagePayment.execute(data);
       if (result.estadoPago === 'PENDIENTE' && result.codigoHttp === 201) {
-        const result = await this.iSendContingenciaUseCase.execute(data);
+        const retrieRequest: Retries = this.iGetRetrieRequest.execute(result);
+        const response = await this.iSendContingenciaUseCase.execute(retrieRequest);
         return {
           technicalCode    : 200,
-          responseData     : { ...result },
+          responseData     : { ...response },
           technicalMessage : 'OK',
           responseDate     : new Date(),
 
@@ -52,7 +59,7 @@ export class CreatePaymentController {
         responseDate     : new Date(),
       } as any;
     } catch (error) {
-      if (error instanceof PaymentDataNotFound || error instanceof ExceededPaymentRetries) {
+      if (error instanceof PaymentDataNotFound || error instanceof ExceededPaymentRetries || error instanceof BussinessInternalError) {
         return {
           technicalCode    : 400,
           technicalMessage : error.message,

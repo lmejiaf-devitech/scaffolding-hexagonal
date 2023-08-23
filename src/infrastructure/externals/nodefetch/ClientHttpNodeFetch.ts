@@ -17,8 +17,9 @@ export class ClientHttpNodeFetch implements IClientHttp {
 
   handleResponse = async<T>(response: Response): Promise<T> => {
     if (!response.ok) {
-      const errorBody = await response.text();
-      throw new Error(`[ :: HTTP Error :: ] ${response.status}:> ${errorBody}`);
+      const errorBody = await response.json() ?? response.text();
+      return errorBody as unknown as T;
+      // throw new Error(`[ :: HTTP Error :: ] ${response.status}:> ${errorBody}`);
     }
     let jsonResponse: Promise<Response> | null;
 

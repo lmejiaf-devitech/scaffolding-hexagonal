@@ -5,11 +5,11 @@ import { IUseCase } from '@commons/application/IUseCase';
 import { ISendNotification } from '@domain/ISendNotification';
 import { BussinessInternalError } from '@domain/domain-exceptions/BussinessInternalError';
 import { ExceededPaymentRetries } from '@domain/domain-exceptions/ExceededPaymentRetries';
-import { Payment } from '@domain/entities/Payment';
+import { Retries } from '@domain/entities/Retries';
 import { inject, injectable } from 'inversify';
 
 @injectable()
-export class SendContingenciaUseCase implements IUseCase<Payment, Promise<any>> {
+export class SendContingenciaUseCase implements IUseCase<Retries, Promise<any>> {
   private readonly iSendNotification: ISendNotification;
 
   constructor(
@@ -18,18 +18,20 @@ export class SendContingenciaUseCase implements IUseCase<Payment, Promise<any>> 
     this.iSendNotification = sendContingencia;
   }
 
-  execute = async (params: Payment) => {
+  execute = async (params: Retries) => {
     const result = await this.send(params);
     return result;
   };
 
-  async send(params: Payment, intentos = 0): Promise<any> {
+  async send(params: Retries, intentos = 0): Promise<any> {
     console.log('Los reintentos');
     const result = await this.iSendNotification.send(params);
     if (result.estadoPago === 'APROBADO' || result.estadoPago === 'RECHAZADO') {
       return result;
     }
+    console.log(result.codigoHttp);
     if (result.codigoHttp === 422) {
+      console.log('Entro aqui');
       throw new BussinessInternalError();
     }
     console.log('Los reintentos', intentos);

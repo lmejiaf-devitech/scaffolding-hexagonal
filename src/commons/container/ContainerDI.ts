@@ -37,6 +37,10 @@ import { ISendNotification } from '@domain/ISendNotification';
 import { SendContingencia } from '@infrastructure/externals/services/SendContingencia';
 import { IUseCase } from '@commons/application/IUseCase';
 import { SendContingenciaUseCase } from '@application/usecases/SendContingenciaUseCase';
+import { Retries } from '@domain/entities/Retries';
+import { ValidateRetrieRequest } from '@application/usecases/payment/ValidateRetrieRequest';
+import { GetParameters } from '@infrastructure/persistence/services/GetParameters';
+import { SetGlobalParameters } from '@application/usecases/SetGlobalParameters';
 
 export class ContainerDI implements IContainerDI<Container> {
   private iContainer: Container;
@@ -81,6 +85,7 @@ export class ContainerDI implements IContainerDI<Container> {
     // Database Services
     this.iContainer.bind<IGetPaymentData>('GetPaymentData').to(GetPaymentData).inTransientScope();
     this.iContainer.bind<InsertPayment>('InsertPayment').to(InsertPayment).inTransientScope();
+    this.iContainer.bind<GetParameters>('GetParameters').to(GetParameters).inTransientScope();
 
     // Services (usecases)
     this.iContainer.bind<GetPaymentDataByIdUseCase>('GetPaymentDataByIdUseCase').to(GetPaymentDataByIdUseCase).inTransientScope();
@@ -92,6 +97,11 @@ export class ContainerDI implements IContainerDI<Container> {
     this.iContainer.bind<ISendNotification>('SendNotification').to(SendNotification).inRequestScope();
     this.iContainer.bind<ISendNotification>('SendContingencia').to(SendContingencia).inRequestScope();
     // UseCases
-    this.iContainer.bind<IUseCase<Payment, Promise<any>>>('SendContingenciaUseCase').to(SendContingenciaUseCase).inTransientScope();
+    this.iContainer.bind<IUseCase<Retries, Promise<any>>>('SendContingenciaUseCase').to(SendContingenciaUseCase).inTransientScope();
+    this.iContainer.bind<IUseCase<ITransaccion, Retries>>('ValidateRetrieRequest').to(ValidateRetrieRequest).inTransientScope();
+
+    // Golbal configurations for the application
+
+    this.iContainer.bind<IUseCase<void, void>>('SetGlobalParameters').to(SetGlobalParameters).inSingletonScope();
   }
 }
