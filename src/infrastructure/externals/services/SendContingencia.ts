@@ -43,7 +43,7 @@ export class SendContingencia {
       idReintento    : params.idReintento,
       fechaReintento : params.fechaReintento,
     };
-    this.iGenerateLogs.execute({
+    await this.iGenerateLogs.execute({
       objeto            : request,
       idTipoRespuesta   : TIPO_RESPUESTA.REQUEST,
       idEstado          : ESTADOS_PAGO.PENDIENTE,
