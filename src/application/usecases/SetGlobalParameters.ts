@@ -7,10 +7,14 @@ import { inject, injectable } from 'inversify';
 export class SetGlobalParameters implements IUseCase<void, void> {
   iGetParameters: IUseCase<void, any>;
 
+  iParameters: any;
+
   constructor (
     @inject('GetParameters') private getParameters: IServices<void, any>,
+    @inject('Parameters') private theParameters: Parameters,
   ) {
     this.iGetParameters = getParameters;
+    this.iParameters = theParameters;
   }
 
   execute = async (): Promise<void> => {
@@ -28,12 +32,13 @@ export class SetGlobalParameters implements IUseCase<void, void> {
 
     const maximoTiempoConsultaPago = results.find((result: any) => result.descripcion === 'APPTERPEL_INTEGRATION_SERVICE_MAX_TIEMPO_CONSULTA_PAGO');
 
-    const parameters = new Parameters();
+    const parameters = this.iParameters;
     parameters.setMaximoNumeroReenvios(maximoNumeroReenvios.valor);
     parameters.setMaximoTiempoReenvio(maximoTiempoReenvio.valor);
     parameters.setTiempoMaximoPrimerConsultaPago(tiempoMaximoPrimerConsultaPago.valor);
     parameters.setTiempoMaximoPrimerReenvio(tiempoMaximoPrimerReenvio.valor);
     parameters.setMaximoNumeroConsultaPago(maximoNumeroConsultaPago.valor);
     parameters.setMaximoTiempoConsultaPago(maximoTiempoConsultaPago.valor);
+    console.log('🚀 ~ file: SetGlobalParameters.ts:32 ~ SetGlobalParameters ~ execute= ~ parameters:', parameters);
   };
 }

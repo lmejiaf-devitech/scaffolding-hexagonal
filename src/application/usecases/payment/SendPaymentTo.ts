@@ -14,7 +14,7 @@ export class SendPaymentTo {
   }
 
   async send(params: Payment): Promise<any> {
-    const result = this.iSendNotification.send(params);
-    return result;
+    const response = await this.iSendNotification.send(params);
+    return response;
   }
 }

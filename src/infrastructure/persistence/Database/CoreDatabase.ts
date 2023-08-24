@@ -27,7 +27,12 @@ export class CoreDatabase {
   }
 
   public async query(query: string, params?: any): Promise<QueryResult> {
+    const client = await this.pool.connect().catch(() => {
+      console.log('Error en la conexion a la base de datos');
+      return null;
+    });
     try {
+      if (!client) throw new Error('Error en la conexion a la base de datos');
       const result = await this.pool.query(query, params || []);
       return result;
     } catch (error) {
@@ -41,7 +46,7 @@ export class CoreDatabase {
       console.error(errorMessage);
       throw error;
     } finally {
-      this.pool.end();
+      if (client) client.release();
     }
   }
 }

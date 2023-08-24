@@ -5,6 +5,8 @@ export class Retries {
 
   fechaReintento: Date;
 
+  idMovimento?: number;
+
   getidSeguimiento(): string {
     return this.idSeguimiento;
   }

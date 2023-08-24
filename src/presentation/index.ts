@@ -7,7 +7,7 @@ import { paymentsRouter } from './api/server/express/routers/PaymentRouter';
 
 // definiendo punto de entrada
 const expressApi = containerDI.getContainer().resolve(ExpressApi);
-containerDI.getContainer().resolve(SetGlobalParameters).execute().catch((error) => console.log('Ocurrio un problemita', error));
+containerDI.getContainer().resolve(SetGlobalParameters).execute().catch((error) => console.log('Ocurrio un problemita'));
 expressApi.loadRouters('/v1', [ newsRouterV1, paymentsRouter ]);
 
 expressApi.run();

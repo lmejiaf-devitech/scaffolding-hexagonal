@@ -1,15 +1,18 @@
+import { injectable } from 'inversify';
+
+@injectable()
 export class Parameters {
-  maximoNumeroReenvios: number;
+  private maximoNumeroReenvios: number;
 
-  maximoTiempoReenvio: number;
+  private maximoTiempoReenvio: number;
 
-  tiempoMaximoPrimerConsultaPago: number;
+  private tiempoMaximoPrimerConsultaPago: number;
 
-  tiempoMaximoPrimerReenvio: number;
+  private tiempoMaximoPrimerReenvio: number;
 
-  maximoNumeroConsultaPago: number;
+  private maximoNumeroConsultaPago: number;
 
-  maximoTiempoConsultaPago: number;
+  private maximoTiempoConsultaPago: number;
 
   // Getters and Setters
   public getMaximoNumeroReenvios(): number {

@@ -3,8 +3,10 @@
 /* eslint-disable class-methods-use-this */
 import { IUseCase } from '@commons/application/IUseCase';
 import { ISendNotification } from '@domain/ISendNotification';
+import { ESTADOS_PAGO, TIPO_RESPUESTA } from '@domain/constants';
 import { BussinessInternalError } from '@domain/domain-exceptions/BussinessInternalError';
 import { ExceededPaymentRetries } from '@domain/domain-exceptions/ExceededPaymentRetries';
+import { Parameters } from '@domain/entities/Parameters';
 import { Retries } from '@domain/entities/Retries';
 import { inject, injectable } from 'inversify';
 
@@ -12,10 +14,25 @@ import { inject, injectable } from 'inversify';
 export class SendContingenciaUseCase implements IUseCase<Retries, Promise<any>> {
   private readonly iSendNotification: ISendNotification;
 
+  private readonly iParameters: Parameters;
+
+  private readonly maximoNumeroConsultaPago: number;
+
+  private readonly tiempoMaximoPrimerConsultaPago: number;
+
+  private readonly iGenerateLogs: IUseCase<any, void>;
+
   constructor(
     @inject('SendContingencia') private sendContingencia: ISendNotification,
+    @inject('Parameters') private theParameters: Parameters,
+    @inject('GenerateLogsUseCase') private generateLogs: IUseCase<any, void>,
+
   ) {
     this.iSendNotification = sendContingencia;
+    this.iParameters = theParameters;
+    this.maximoNumeroConsultaPago = this.iParameters.getMaximoNumeroConsultaPago();
+    this.tiempoMaximoPrimerConsultaPago = this.iParameters.getTiempoMaximoPrimerConsultaPago();
+    this.iGenerateLogs = generateLogs;
   }
 
   execute = async (params: Retries) => {
@@ -26,6 +43,11 @@ export class SendContingenciaUseCase implements IUseCase<Retries, Promise<any>> 
   async send(params: Retries, intentos = 0): Promise<any> {
     console.log('Los reintentos');
     const result = await this.iSendNotification.send(params);
+    // await this.iGenerateLogs.execute({
+    //   objeto            : result,
+    //   idTipoRespuesta:  TIPO_RESPUESTA.RESPONSE,
+    //   idEstado          : ESTADOS_PAGO[estadoPago],
+    // })
     if (result.estadoPago === 'APROBADO' || result.estadoPago === 'RECHAZADO') {
       return result;
     }
@@ -36,14 +58,14 @@ export class SendContingenciaUseCase implements IUseCase<Retries, Promise<any>> 
     }
     console.log('Los reintentos', intentos);
     console.log('Los reintentos', intentos >= 3);
-    if (intentos >= 3) {
+    if (intentos >= this.maximoNumeroConsultaPago) {
       throw new ExceededPaymentRetries();
     }
-    await this.sleep(5000);
+    await this.sleep(this.tiempoMaximoPrimerConsultaPago);
     await this.send(params, intentos + 1);
   }
 
   async sleep(ms: number) {
-    return new Promise((resolve) => setTimeout(resolve, ms));
+    return new Promise((resolve) => setTimeout(resolve, Number(ms) * 1000));
   }
 }

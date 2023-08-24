@@ -1,3 +1,4 @@
+/* eslint-disable max-len */
 /* eslint-disable no-shadow */
 /* eslint-disable class-methods-use-this */
 /* eslint-disable import/extensions */
@@ -10,11 +11,16 @@ import { GeneralApiResponse } from '@commons/presentation/GeneralApiResponse';
 import { PaymentDataNotFound } from '@domain/domain-exceptions/PaymentDataNotFound';
 import { ExceededPaymentRetries } from '@domain/domain-exceptions/ExceededPaymentRetries';
 import { BussinessInternalError } from '@domain/domain-exceptions/BussinessInternalError';
-import { CreatePaymentRequestDto, CreatePaymentSuccessDto } from '../dtos/PaymentNewsDto';
 import { Retries } from '@domain/entities/Retries';
+import { Parameters } from '@domain/entities/Parameters';
+import { CreatePaymentRequestDto, CreatePaymentSuccessDto } from '../dtos/PaymentNewsDto';
 
 @injectable()
 export class CreatePaymentController {
+  iSleep: any;
+
+  iParameters: Parameters;
+
   iGetPaymentDataByIdUseCase: IUseCase<CreatePaymentRequestDto, Promise<Payment>>;
 
   iManagePayment: IServices<Payment, Promise<ITransaccion>>;
@@ -23,27 +29,38 @@ export class CreatePaymentController {
 
   iGetRetrieRequest: IUseCase<ITransaccion, Retries>;
 
+  tiempoMaximoPrimerConsultaPago: number;
+
+  iGenerateLogs: IUseCase<any, void>;
+
   constructor(
     @inject('GetPaymentDataByIdUseCase') private getPaymentData: IUseCase<CreatePaymentRequestDto, Promise<Payment>>,
     @inject('ManagePaymentService') private managePayment: IServices<Payment, Promise<ITransaccion>>,
     @inject('SendContingenciaUseCase') private sendContingencia: IUseCase<Retries, Promise<any>>,
     @inject('ValidateRetrieRequest') private validateRetrieRequest: IUseCase<ITransaccion, Retries>,
+    @inject('Parameters') private theParameters: Parameters,
+    @inject('Sleep') private sleep: any,
+    @inject('GenerateLogsUseCase') private generateLogs: IUseCase<any, void>,
   ) {
     this.iGetPaymentDataByIdUseCase = getPaymentData;
     this.iManagePayment = managePayment;
     this.iSendContingenciaUseCase = sendContingencia;
     this.iGetRetrieRequest = validateRetrieRequest;
+    this.iParameters = theParameters;
+    this.iSleep = sleep;
+    this.tiempoMaximoPrimerConsultaPago = this.iParameters.getTiempoMaximoPrimerConsultaPago();
+    this.iGenerateLogs = generateLogs;
   }
 
   execute = async(createPaymentDto: CreatePaymentRequestDto): Promise<CreatePaymentSuccessDto | GeneralApiResponse> => {
     try {
-      console.log('🚀 ~ file: CreatePaymentController.ts:26 ~ CreatePaymentController ~ execute=async ~ createPaymentDto:', createPaymentDto);
       console.log('LLEGO AL CONTROLLER');
       const data = await this.iGetPaymentDataByIdUseCase.execute(createPaymentDto);
       const result = await this.iManagePayment.execute(data);
       if (result.estadoPago === 'PENDIENTE' && result.codigoHttp === 201) {
+        await this.iSleep.do(this.tiempoMaximoPrimerConsultaPago);
         const retrieRequest: Retries = this.iGetRetrieRequest.execute(result);
-        const response = await this.iSendContingenciaUseCase.execute(retrieRequest);
+        const response = await this.iSendContingenciaUseCase.execute({ ...retrieRequest, idMovimento: createPaymentDto.identificadorMovimiento } as Retries);
         return {
           technicalCode    : 200,
           responseData     : { ...response },

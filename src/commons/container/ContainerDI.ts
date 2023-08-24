@@ -41,6 +41,10 @@ import { Retries } from '@domain/entities/Retries';
 import { ValidateRetrieRequest } from '@application/usecases/payment/ValidateRetrieRequest';
 import { GetParameters } from '@infrastructure/persistence/services/GetParameters';
 import { SetGlobalParameters } from '@application/usecases/SetGlobalParameters';
+import { Parameters } from '@domain/entities/Parameters';
+import { Sleep } from '@application/commons/Sleep';
+import { GenerateLogs } from '@infrastructure/persistence/services/GenerateLogs';
+import { GenerateLogsUseCase } from '@application/commons/GenerateLogsUseCase';
 
 export class ContainerDI implements IContainerDI<Container> {
   private iContainer: Container;
@@ -56,7 +60,6 @@ export class ContainerDI implements IContainerDI<Container> {
   registerDependencies(): void {
     // transcient ->> hace un new cada vez que se obtiene o inyecta
     // singleton -> una instancia compartida para todos
-
     // logger
     this.iContainer.bind<ILogger<log4js.Logger>>('LoggerLog4JS').to(LoggerLog4JS).inSingletonScope();
 
@@ -72,6 +75,9 @@ export class ContainerDI implements IContainerDI<Container> {
 
     // ---------------------------------->
     // -> poner las interfaces, no la implementaciòn especìfica a menos que sea necesario como por ejemplo en el caso de los middlewares
+    // El dao dao
+
+    this.iContainer.bind<Parameters>('Parameters').to(Parameters).inSingletonScope();
     // Middlewares
     this.iContainer.bind<ValidateCreatePaymentRequestBodyMiddleware>('ValidateCreatePaymentRequestBodyMiddleware').to(ValidateCreatePaymentRequestBodyMiddleware).inTransientScope();
     this.iContainer.bind<IValidation<ValidateAvaliableMovimientoIdType>>('ValidateAvaliableMovimientoId').to(ValidateAvaliableMovimientoId).inTransientScope();
@@ -86,11 +92,14 @@ export class ContainerDI implements IContainerDI<Container> {
     this.iContainer.bind<IGetPaymentData>('GetPaymentData').to(GetPaymentData).inTransientScope();
     this.iContainer.bind<InsertPayment>('InsertPayment').to(InsertPayment).inTransientScope();
     this.iContainer.bind<GetParameters>('GetParameters').to(GetParameters).inTransientScope();
+    this.iContainer.bind<IServices<any, void>>('GenerateLogs').to(GenerateLogs).inTransientScope();
 
     // Services (usecases)
     this.iContainer.bind<GetPaymentDataByIdUseCase>('GetPaymentDataByIdUseCase').to(GetPaymentDataByIdUseCase).inTransientScope();
     this.iContainer.bind<IServices<Payment, Promise<ITransaccion>>>('ManagePaymentService').to(ManagePaymentService).inTransientScope();
-
+    this.iContainer.bind<IServices<any, void>>('GenerateLogsUseCase').to(GenerateLogsUseCase).inTransientScope();
+    // Commons use cases
+    this.iContainer.bind<Sleep>('Sleep').to(Sleep).inTransientScope();
     // ---------------------------------->
     // External Services
 
