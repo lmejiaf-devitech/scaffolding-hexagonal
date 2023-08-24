@@ -45,15 +45,15 @@ export class SendContingenciaUseCase implements IUseCase<Retries, Promise<any>> 
   async send(params: Retries, intentos = 0): Promise<any> {
     console.log('Los reintentos');
     const result = await this.iSendNotification.send(params);
-    await this.iGenerateLogs.execute({
-      objeto            : result,
-      idTipoRespuesta   : TIPO_RESPUESTA.RESPONSE,
-      idEstado          : ESTADOS_PAGO[result.estadoPago],
-      idStatus          : ESTATUS_PAGO[result.estadoPago],
-      idTipoEnvio       : TIPO_ENVIO.REINTENTO,
-      codigoSeguimiento : params.idSeguimiento,
-      idMovimento       : params.idMovimento,
-    });
+    // await this.iGenerateLogs.execute({
+    //   objeto            : result,
+    //   idTipoRespuesta   : TIPO_RESPUESTA.RESPONSE,
+    //   idEstado          : ESTADOS_PAGO[result.estadoPago],
+    //   idStatus          : ESTATUS_PAGO[result.estadoPago],
+    //   idTipoEnvio       : TIPO_ENVIO.REINTENTO,
+    //   codigoSeguimiento : params.idSeguimiento,
+    //   idMovimento       : params.idMovimento,
+    // });
     if (result.estadoPago === 'APROBADO' || result.estadoPago === 'RECHAZADO') {
       return result;
     }

@@ -12,7 +12,7 @@ export enum TIPO_ENVIO {
 
 export enum ESTATUS_PAGO {
   PENDIENTE = 1,
-  APROBADOS = 2,
+  APROBADO = 2,
   EXPIRADOS = 3,
   RECHAZADOS = 4,
   RECHAZADO_POR_FALLA = 5,

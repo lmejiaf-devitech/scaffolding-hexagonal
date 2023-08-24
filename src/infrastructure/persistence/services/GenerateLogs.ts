@@ -19,11 +19,11 @@ export class GenerateLogs implements IServices<any, void> {
         objeto, idTipoRespuesta, idEstado, idStatus, idTipoEnvio, codigoSeguimiento, idMovimento,
       } = params;
       const movimiento = await this.dbCore.query(`
-        select pg.id_pago 
-        from pagos.tbl_pagos pg 
-        inner public.ct_movimientos cm on cm.id = pg.id_movimiento 
-        where cm.id = $1;
-      
+        select pg.id_pago
+        from pagos.tbl_pagos pg
+        inner join public.ct_movimientos cm on cm.id = pg.id_movimiento 
+        where cm.id = $1
+        ;
       `, [ idMovimento ]);
       const id = movimiento.rows[0].id_pago;
       await this.dbCore.query(`
