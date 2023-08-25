@@ -57,10 +57,27 @@ export class CreatePaymentController {
       console.log('LLEGO AL CONTROLLER');
       const data = await this.iGetPaymentDataByIdUseCase.execute(createPaymentDto);
       const result = await this.iManagePayment.execute(data);
+      console.log(result.estadoPago);
+      if (result.estadoPago === 'RECHAZADO') {
+        return {
+          technicalCode    : 400,
+          responseData     : { ...result },
+          technicalMessage : 'Error pago rechazado',
+          responseDate     : new Date(),
+        };
+      }
       if (result.estadoPago === 'PENDIENTE' && result.codigoHttp === 201) {
         await this.iSleep.do(this.tiempoMaximoPrimerConsultaPago);
         const retrieRequest: Retries = this.iGetRetrieRequest.execute(result);
         const response = await this.iSendContingenciaUseCase.execute({ ...retrieRequest, idMovimento: createPaymentDto.identificadorMovimiento } as Retries);
+        if (response.estadoPago === 'RECHAZADO') {
+          return {
+            technicalCode    : 400,
+            responseData     : { ...response },
+            technicalMessage : 'Error pago rechazado',
+            responseDate     : new Date(),
+          };
+        }
         return {
           technicalCode    : 200,
           responseData     : { ...response },

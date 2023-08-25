@@ -54,7 +54,6 @@ export class SendContingencia {
     // });
     try {
       const response = await this.clientHttp.post(url, request);
-      console.log('🚀 ~ file: SendNotification.ts:21 ~ SendNotification ~ send= ~ response:', response);
       return response;
     } catch (error: Error | any) {
       if (intentos >= this.maximoNumeroReenvios) {
