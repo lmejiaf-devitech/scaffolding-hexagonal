@@ -33,6 +33,8 @@ export class CreatePaymentController {
 
   iGenerateLogs: IUseCase<any, void>;
 
+  iUpdatePaymentState: IUseCase<number, Promise<void>>;
+
   constructor(
     @inject('GetPaymentDataByIdUseCase') private getPaymentData: IUseCase<CreatePaymentRequestDto, Promise<Payment>>,
     @inject('ManagePaymentService') private managePayment: IServices<Payment, Promise<ITransaccion>>,
@@ -41,6 +43,7 @@ export class CreatePaymentController {
     @inject('Parameters') private theParameters: Parameters,
     @inject('Sleep') private sleep: any,
     @inject('GenerateLogsUseCase') private generateLogs: IUseCase<any, void>,
+    @inject('UpdatePaymentStateToPending') private updatePaymentStateToPending: IUseCase<number, Promise<void>>,
   ) {
     this.iGetPaymentDataByIdUseCase = getPaymentData;
     this.iManagePayment = managePayment;
@@ -50,6 +53,7 @@ export class CreatePaymentController {
     this.iSleep = sleep;
     this.tiempoMaximoPrimerConsultaPago = this.iParameters.getTiempoMaximoPrimerConsultaPago();
     this.iGenerateLogs = generateLogs;
+    this.iUpdatePaymentState = updatePaymentStateToPending;
   }
 
   execute = async(createPaymentDto: CreatePaymentRequestDto): Promise<CreatePaymentSuccessDto | GeneralApiResponse> => {
@@ -67,6 +71,7 @@ export class CreatePaymentController {
         };
       }
       if (result.estadoPago === 'PENDIENTE' && result.codigoHttp === 201) {
+        await this.iUpdatePaymentState.execute(createPaymentDto.identificadorMovimiento);
         await this.iSleep.do(this.tiempoMaximoPrimerConsultaPago);
         const retrieRequest: Retries = this.iGetRetrieRequest.execute(result);
         const response = await this.iSendContingenciaUseCase.execute({ ...retrieRequest, idMovimento: createPaymentDto.identificadorMovimiento } as Retries);

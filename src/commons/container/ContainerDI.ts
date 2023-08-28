@@ -45,6 +45,9 @@ import { Parameters } from '@domain/entities/Parameters';
 import { Sleep } from '@application/commons/Sleep';
 import { GenerateLogs } from '@infrastructure/persistence/services/GenerateLogs';
 import { GenerateLogsUseCase } from '@application/commons/GenerateLogsUseCase';
+import { IUpdatePaymentState } from '@domain/UpdatePaymentState';
+import { UpdatePaymentState } from '@infrastructure/persistence/services/UpdatePaymentState';
+import { UpdatePaymentStateToPending } from '@application/usecases/payment/UpdatePaymentStateToPending';
 
 export class ContainerDI implements IContainerDI<Container> {
   private iContainer: Container;
@@ -93,7 +96,7 @@ export class ContainerDI implements IContainerDI<Container> {
     this.iContainer.bind<InsertPayment>('InsertPayment').to(InsertPayment).inTransientScope();
     this.iContainer.bind<GetParameters>('GetParameters').to(GetParameters).inTransientScope();
     this.iContainer.bind<IServices<any, void>>('GenerateLogs').to(GenerateLogs).inTransientScope();
-
+    this.iContainer.bind<IServices<IUpdatePaymentState, void>>('UpdatePaymentState').to(UpdatePaymentState).inTransientScope();
     // Services (usecases)
     this.iContainer.bind<GetPaymentDataByIdUseCase>('GetPaymentDataByIdUseCase').to(GetPaymentDataByIdUseCase).inTransientScope();
     this.iContainer.bind<IServices<Payment, Promise<ITransaccion>>>('ManagePaymentService').to(ManagePaymentService).inTransientScope();
@@ -107,6 +110,7 @@ export class ContainerDI implements IContainerDI<Container> {
     this.iContainer.bind<ISendNotification>('SendContingencia').to(SendContingencia).inRequestScope();
     // UseCases
     this.iContainer.bind<IUseCase<Retries, Promise<any>>>('SendContingenciaUseCase').to(SendContingenciaUseCase).inTransientScope();
+    this.iContainer.bind<IUseCase<number, Promise<void>>>('UpdatePaymentStateToPending').to(UpdatePaymentStateToPending).inTransientScope();
     this.iContainer.bind<IUseCase<ITransaccion, Retries>>('ValidateRetrieRequest').to(ValidateRetrieRequest).inTransientScope();
 
     // Golbal configurations for the application
