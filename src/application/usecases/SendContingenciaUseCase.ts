@@ -3,9 +3,7 @@
 /* eslint-disable class-methods-use-this */
 import { IUseCase } from '@commons/application/IUseCase';
 import { ISendNotification } from '@domain/ISendNotification';
-import {
-  ESTADOS_PAGO, ESTATUS_PAGO, TIPO_ENVIO, TIPO_RESPUESTA,
-} from '@domain/constants';
+
 import { BussinessInternalError } from '@domain/domain-exceptions/BussinessInternalError';
 import { ExceededPaymentRetries } from '@domain/domain-exceptions/ExceededPaymentRetries';
 import { Parameters } from '@domain/entities/Parameters';
@@ -22,19 +20,15 @@ export class SendContingenciaUseCase implements IUseCase<Retries, Promise<any>> 
 
   private readonly tiempoMaximoPrimerConsultaPago: number;
 
-  private readonly iGenerateLogs: IUseCase<any, void>;
-
   constructor(
     @inject('SendContingencia') private sendContingencia: ISendNotification,
     @inject('Parameters') private theParameters: Parameters,
-    @inject('GenerateLogsUseCase') private generateLogs: IUseCase<any, void>,
 
   ) {
     this.iSendNotification = sendContingencia;
     this.iParameters = theParameters;
     this.maximoNumeroConsultaPago = this.iParameters.getMaximoNumeroConsultaPago();
     this.tiempoMaximoPrimerConsultaPago = this.iParameters.getTiempoMaximoPrimerConsultaPago();
-    this.iGenerateLogs = generateLogs;
   }
 
   execute = async (params: Retries) => {
