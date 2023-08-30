@@ -18,6 +18,7 @@ export class GenerateLogs implements IServices<any, void> {
       const {
         objeto, idTipoRespuesta, idEstado, idStatus, idTipoEnvio, codigoSeguimiento, idMovimento,
       } = params;
+      console.log('🚀 ~ file: GenerateLogs.ts:21 ~ GenerateLogs ~ execute= ~ params:', params);
       const movimiento = await this.dbCore.query(`
         select pg.id_pago
         from pagos.tbl_pagos pg

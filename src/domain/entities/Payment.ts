@@ -9,6 +9,8 @@ export class Payment {
 
   fechaFinVenta: Date;
 
+  identificadorMovimiento?: number;
+
   public getManguera(): number {
     return this.manguera;
   }

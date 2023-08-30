@@ -60,7 +60,7 @@ export class CreatePaymentController {
     try {
       console.log('LLEGO AL CONTROLLER');
       const data = await this.iGetPaymentDataByIdUseCase.execute(createPaymentDto);
-      const result = await this.iManagePayment.execute(data);
+      const result = await this.iManagePayment.execute({ identificadorMovimiento: createPaymentDto.identificadorMovimiento, ...data } as Payment);
       console.log(result.estadoPago);
       if (result.estadoPago === 'RECHAZADO') {
         return {
